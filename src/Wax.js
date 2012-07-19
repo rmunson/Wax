@@ -1,7 +1,7 @@
 /**
  * 	Wax : A template wrapper and manager for some 
  * 		popular JS implementations of the Mustache spec.
- * 	@version 0.1
+ * 	@version 0.1beta
  */
 
 (function(ns,doc,T){
