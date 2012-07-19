@@ -14,20 +14,43 @@
 			throw new Error('Wax error : attempting to call unregistered template '+id);
 			return true;
 		},
-		/* Seriously ugly... so, rewrite soon */
+
+	/**
+	 * Generate an error and return a no-operation function def to avoid
+	 * additional errors.
+	 * @param  {string} id ID associated with the failed operation
+	 * @return {function}    Empty function
+	 */
 	error = function(id){
 		return _err(id) && _noop;
-	}
-	store = function(id,val){
-		return ccache[id]=ccache[id]||val;
 	},
+
+	/**
+	 * Add a compiled template to the compile cache ccache.
+	 * @param  {string} id  Key used for storage/retrieval of a compiled template
+	 * @param  {function} tmpl Compiled template
+	 * @return {function}     Compiled template stored during the operation
+	 */
+	store = function(id,tmpl){
+		return ccache[id]=ccache[id]||tmpl;
+	},
+
+	/**
+	 * Retrieve a registered template from the cache
+	 * @param  {string} id Named template key to retrieve
+	 * @return {function}    Compiled template or a no-operation function
+	 */
 	lookup = function(id){
 		return ccache[id]|| error(id);
 	},
-	compile=(function(t,c){
+	compile=(function(t,co){
+		var c;
 		for(var key in t){
-			if(t[key] && t.hasOwnProperty(key) && c.hasOwnProperty(key)){
-				return c[key];
+			if(t[key] && t.hasOwnProperty(key) && co.hasOwnProperty(key)){
+				c=co[key];
+				return function(id,tmpl){
+					return ccache[id||tmpl] || c(id,tmpl);
+				}
 			}
 		}
 	})(T,{
@@ -70,10 +93,10 @@
 	};
 
 	ns.Wax={
-		get 		: lookup,
-		register 	: register,
-		registerById: registerById,
-		render 		: render
+		get 			: lookup,
+		register 		: register,
+		registerById	: registerById,
+		render 			: render
 	}
 
 })(this,document,{
