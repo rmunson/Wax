@@ -41,8 +41,19 @@
 	 * @return {function}    Compiled template or a no-operation function
 	 */
 	lookup = function(id){
-		return ccache[id]|| error(id);
+		return get(id)|| error(id);
 	},
+
+	/**
+	 * More aggressive retrieve. Pull a registered template from the cache or 
+	 * attempt to find it in the current document.
+	 * @param  {string} id Named template key to retrieve
+	 * @return {function}    Compiled template or a no-operation function
+	 */
+	get = function(id){
+		return ccache[id] || registerById(id) || error(id);
+	},
+
 	compile=(function(t,co){
 		var c;
 		for(var key in t){
@@ -89,11 +100,12 @@
 		return typeof tmpl==='function' ? store(id,tmpl) : compile(id,tmpl);
 	},
 	render = function(id,view,opts){
-		return lookup(id)(view,opts);
+		return get(id)(view,opts);
 	};
 
 	ns.Wax={
-		get 			: lookup,
+		get 			: get,
+		lookup 			: lookup,
 		register 		: register,
 		registerById	: registerById,
 		render 			: render
