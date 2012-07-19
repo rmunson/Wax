@@ -2,9 +2,6 @@
  * 	Wax : A template wrapper and manager for some 
  * 		popular JS implementations of the Mustache spec.
  * 	@version 0.1
- * 	
- * 	(c) 2012 Russell Munson
- *  http://github.com/fallenice/gesso
  */
 
 (function(ns,doc,T){
@@ -60,7 +57,7 @@
 	registerById = function(id){
 		var tmpl;
 		if(typeof id==="string"){
-			tmlp=(doc.getElementById(id)||EMPTY).innerHTML;
+			tmpl=(doc.getElementById(id)||EMPTY).innerHTML;
 			return compile(id,tmpl);
 		}
 		return error(id);
