@@ -7,6 +7,7 @@
 (function(ns,doc,T){
 
 	var EMPTY='',
+		FN 	='function',
 		ccache={},
 		rcache={},
 		_noop=function(){},
@@ -54,6 +55,16 @@
 		return ccache[id] || registerById(id) || error(id);
 	},
 
+	getRawPartials = function(pars){
+		var key,
+			ret={},
+			par;
+		for(key in pars){
+			par=pars[key];
+			ret[key] = typeof par===FN && par.__nowax__ || par;
+		}
+		return ret;
+	},
 	compile=(function(t,co){
 		var c;
 		for(var key in t){
@@ -70,21 +81,29 @@
 		},
 
 		handlebars : function(_id,tmpl){
-			var tmp=Handlebars.compile(tmpl);
-			return store(_id||tmpl,function(){
-				var opts;
-				if(arguments.length>1){
-					opts={ partials:arguments[1]};
-				}
-				return tmp.call(tmp,arguments[0],opts);
-			});
+			var tmp=Handlebars.compile(tmpl),
+				fn=function(ctx,partials){
+					var opts;
+					if(partials){
+						opts={ partials:getRawPartials(partials)};
+					}
+					return tmp(ctx,opts);
+				};
+			fn.__nowax__=tmpl;
+			return store(_id||tmpl,fn);
 		},
 
 		hogan : function(_id,tmpl){
-			var tmp=Hogan.compile(tmpl);
-			return store(_id||tmpl,function(){
-					return tmp.render.apply(tmp,arguments);
-			})
+			var tmp=Hogan.compile(tmpl),
+			fn=function(ctx,partials){
+				var opts;
+				if(partials){
+					opts=getRawPartials(partials);
+				}
+				return tmp.render(ctx,opts);
+			};
+			fn.__nowax__=tmp;
+			return store(_id||tmpl,fn);
 		}
 	}),
 
@@ -92,7 +111,7 @@
 		var tmpl;
 		if(typeof id==="string"){
 			tmpl=(doc.getElementById(id)||EMPTY).innerHTML;
-			return compile(id,tmpl);
+			return tmpl && compile(id,tmpl);
 		}
 		return error(id);
 	},
