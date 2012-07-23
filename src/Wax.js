@@ -15,6 +15,9 @@
 			throw new Error('Wax error : attempting to call unregistered template '+id);
 			return true;
 		},
+		isFunc = function(nf){
+			return typeof nf===FN;
+		}
 
 	/**
 	 * Generate an error and return a no-operation function def to avoid
@@ -77,11 +80,11 @@
 		}
 	})(T,{
 		mustache : function(_id,tmpl){
-			return store(_id||tmpl,Mustache.compile(tmpl));
+			return store(_id||tmpl,isFunc(tmpl) && tmpl || Mustache.compile(tmpl));
 		},
 
 		handlebars : function(_id,tmpl){
-			var tmp=Handlebars.compile(tmpl),
+				var tmp=isFunc(tmpl) && tmpl || Handlebars.compile(tmpl),
 				fn=function(ctx,partials){
 					var opts;
 					if(partials){
@@ -94,7 +97,7 @@
 		},
 
 		hogan : function(_id,tmpl){
-			var tmp=Hogan.compile(tmpl),
+			var tmp=isFunc(tmpl) && new Hogan.Template(tmpl) ||Hogan.compile(tmpl),
 			fn=function(ctx,partials){
 				var opts;
 				if(partials){
@@ -116,7 +119,7 @@
 		return error(id);
 	},
 	register = function(tmpl,id){
-		return typeof tmpl==='function' ? store(id,tmpl) : compile(id,tmpl);
+		return compile(id,tmpl);
 	},
 	render = function(id,view,opts){
 		return get(id)(view,opts);
