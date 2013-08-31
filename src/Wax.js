@@ -1,23 +1,28 @@
 /**
  * 	Wax : A template wrapper and manager for some 
  * 		popular JS implementations of the Mustache spec.
- * 	@version 0.1beta
+ * 	@version 0.2
  */
 
 (function(ns,doc,T){
 
-	var EMPTY='',
-		FN 	='function',
-		ccache={},
-		rcache={},
-		_noop=function(){},
-		_err=function(id){
-			throw new Error('Wax error : attempting to call unregistered template '+id);
-			return true;
-		},
-		isFunc = function(nf){
-			return typeof nf===FN;
-		}
+	var primary,
+		EMPTY 	= '',
+		FN 		= 'function',
+		ERROR 	= 'Wax error : ',
+		ERROR_TEMPLATE	= ERROR + 'attempting to call unregistered template ',
+		ERROR_HELPER	= ERROR + 'attempting to register helper with an existing id ',
+		ccache	= {},
+		hcache	= {},
+
+	_noop	= function(){},
+	_err	= function(ERR,id){
+		throw new Error(ERR+id);
+		return false;
+	},
+	isFunc 	= function(nf){
+		return typeof nf===FN;
+	},
 
 	/**
 	 * Generate an error and return a no-operation function def to avoid
@@ -26,7 +31,7 @@
 	 * @return {function}    Empty function
 	 */
 	error = function(id){
-		return _err(id) && _noop;
+		return _err(ERROR_TEMPATE,id) || _noop;
 	},
 
 	/**
@@ -73,6 +78,7 @@
 		for(var key in t){
 			if(t[key] && t.hasOwnProperty(key) && co.hasOwnProperty(key)){
 				c=co[key];
+				primary=key;
 				return function(id,tmpl){
 					return ccache[id||tmpl] || c(id,tmpl);
 				}
@@ -80,19 +86,12 @@
 		}
 	})(T,{
 		mustache : function(_id,tmpl){
-			return store(_id||tmpl,isFunc(tmpl) && tmpl || Mustache.compile(tmpl));
-		},
-
-		handlebars : function(_id,tmpl){
-				var tmp=isFunc(tmpl) && tmpl || Handlebars.compile(tmpl),
+			var tmp=isFunc(tmpl) && tmpl || Mustache.compile(tmpl),
 				fn=function(ctx,partials){
-					var opts;
-					if(partials){
-						opts={ partials:getRawPartials(partials)};
-					}
-					return tmp(ctx,opts);
+					attachHelpers(ctx);
+					return tmp(ctx,partials)
 				};
-			fn.__nowax__=tmpl;
+			fn.__nowax__=tmp;
 			return store(_id||tmpl,fn);
 		},
 
@@ -103,13 +102,22 @@
 				if(partials){
 					opts=getRawPartials(partials);
 				}
+				attachHelpers(ctx);
 				return tmp.render(ctx,opts);
 			};
 			fn.__nowax__=tmp;
 			return store(_id||tmpl,fn);
 		}
 	}),
-
+	attachHelpers = function(ctx){
+		var key;
+		for(key in hcache){
+			ctx[key]=ctx[key]||hcache[key];
+		}
+	},
+	register = function(tmpl,id){
+		return compile(id,tmpl);
+	},
 	registerById = function(id){
 		var tmpl;
 		if(typeof id==="string"){
@@ -118,8 +126,9 @@
 		}
 		return error(id);
 	},
-	register = function(tmpl,id){
-		return compile(id,tmpl);
+	registerHelper=function(id,fn){
+		hcache[id]=fn;
+		return true;
 	},
 	render = function(id,view,opts){
 		return get(id)(view,opts);
@@ -130,11 +139,18 @@
 		lookup 			: lookup,
 		register 		: register,
 		registerById	: registerById,
-		render 			: render
+		registerHelper  : registerHelper,
+		render 			: render,
+		list 			: function(){
+			return ccache;
+		}
 	}
 
 })(this,document,{
 	mustache 	: typeof Mustache!=='undefined' && Mustache,
-	handlebars 	: typeof Handlebars!=='undefined' && Handlebars, 
 	hogan 		: typeof Hogan!=='undefined' && Hogan
-})
+});
+
+if(this.define && this.define.amd){
+	define('Wax',this.Wax)
+}
