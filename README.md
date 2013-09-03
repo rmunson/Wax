@@ -1,5 +1,6 @@
-Wax.js - Keep your Mustache nice and neat.
+Wax.js 
 ===
+#####Keep your Mustache nice and neat.
 
 A template wrapper and manager for some popular JS implementations of the Mustache spec
 
