@@ -1,8 +1,7 @@
 Wax.js
 ===
 
-A template wrapper and manager for some popular JS implementations of the Mustache spec.  Just a a little Wax to keep your Mustache nice and neat.
-
+A template wrapper and manager for some popular JS implementations of the Mustache spec
 
 ### Why might Wax be useful in your project?
 The goal of this project is to create a unified and implementation agnostic API for loading, compiling, rendering and caching mustache templates.  Providing a stable API and feature-set will add a layer of abstraction between your view, view model, and templating engine.  
