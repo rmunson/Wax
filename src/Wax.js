@@ -9,6 +9,7 @@
     var primary,
         EMPTY   = '',
         FN      = 'function',
+        STRING  = 'string',
         ERROR   = 'Wax error : ',
         ERROR_TEMPLATE  = ERROR + 'attempting to call unregistered template ',
         ERROR_HELPER    = ERROR + 'attempting to register helper with an existing id ',
@@ -120,7 +121,7 @@
     },
     registerById = function(id){
         var tmpl;
-        if(typeof id==="string"){
+        if(typeof id===STRING){
             tmpl=(doc.getElementById(id)||EMPTY).innerHTML;
             return tmpl && compile(id,tmpl);
         }
