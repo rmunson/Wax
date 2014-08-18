@@ -13,7 +13,7 @@ If you, for example, would like to use Hogan.js on the server, and Mustache.js o
 
 
 
-_The current scope includes support for Mustache.js and Hogan.js._
+_The current scope includes support for Mustache.js (0.5.2-0.8.x) and Hogan.js (2.0.0-3.0.x)._
 
 ### Using with Requirejs
 Wax comes amd ready out of the box.  However, you will need to point it at your Mustache implementation of choice.
