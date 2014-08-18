@@ -4,17 +4,33 @@
  *  @version 0.2
  */
 
-(function(ns,doc,T){
-
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(function(require,exports,module){
+            var mustachelib=require('WaxMustache');
+            return factory(mustachelib);
+        });
+    } else if (typeof module !== 'undefined' && module.exports) {
+        var jQuery = require('jquery');
+        module.exports = factory( jQuery );
+    } else{
+        root.Wax = factory(typeof Mustache!=='undefined' && Mustache || typeof Hogan!=='undefined' && Hogan);
+    }
+}(this,function(yourMustache){
+    if(T===undefined){
+        _err(ERROR+"Template engine not found");
+    }
     var primary,
         EMPTY   = '',
         FN      = 'function',
-        STRING  = 'string',
         ERROR   = 'Wax error : ',
         ERROR_TEMPLATE  = ERROR + 'attempting to call unregistered template ',
         ERROR_HELPER    = ERROR + 'attempting to register helper with an existing id ',
+        MUSTACHENAME    = "mustache.js",
         ccache  = {},
         hcache  = {},
+        doc = document,
 
     _noop   = function(){},
     _err    = function(ERR,id){
@@ -32,7 +48,7 @@
      * @return {function}    Empty function
      */
     error = function(id){
-        return _err(ERROR_TEMPATE,id) || _noop;
+        return _err(ERROR_TEMPLATE,id) || _noop;
     },
 
     /**
@@ -51,7 +67,7 @@
      * @return {function}    Compiled template or a no-operation function
      */
     lookup = function(id){
-        return get(id)|| error(id);
+        return ccache[id] || error(id);
     },
 
     /**
@@ -74,42 +90,7 @@
         }
         return ret;
     },
-    compile=(function(t,co){
-        var c;
-        for(var key in t){
-            if(t[key] && t.hasOwnProperty(key) && co.hasOwnProperty(key)){
-                c=co[key];
-                primary=key;
-                return function(id,tmpl){
-                    return ccache[id||tmpl] || c(id,tmpl);
-                }
-            }
-        }
-    })(T,{
-        mustache : function(_id,tmpl){
-            var tmp=isFunc(tmpl) && tmpl || Mustache.compile(tmpl),
-                fn=function(ctx,partials){
-                    attachHelpers(ctx);
-                    return tmp(ctx,partials)
-                };
-            fn.__nowax__=tmp;
-            return store(_id||tmpl,fn);
-        },
 
-        hogan : function(_id,tmpl){
-            var tmp=isFunc(tmpl) && new Hogan.Template(tmpl) ||Hogan.compile(tmpl),
-            fn=function(ctx,partials){
-                var opts;
-                if(partials){
-                    opts=getRawPartials(partials);
-                }
-                attachHelpers(ctx);
-                return tmp.render(ctx,opts);
-            };
-            fn.__nowax__=tmp;
-            return store(_id||tmpl,fn);
-        }
-    }),
     attachHelpers = function(ctx){
         var key;
         for(key in hcache){
@@ -121,7 +102,7 @@
     },
     registerById = function(id){
         var tmpl;
-        if(typeof id===STRING){
+        if(typeof id==="string"){
             tmpl=(doc.getElementById(id)||EMPTY).innerHTML;
             return tmpl && compile(id,tmpl);
         }
@@ -132,9 +113,40 @@
     },
     render = function(id,view,opts){
         return get(id)(view,opts);
-    };
+    },
+        // Detect the compiler
+    compile=(function(_compile){
+        return function(id,tmpl){
+            return ccache[id||tmpl] || _compile(id,tmpl);
+        }
+    })(T.name && T.name===MUSTACHENAME ? 
+        // Mustache.js detected
+        function(_id,tmpl){
+            var tmp=isFunc(tmpl) && tmpl || YourMustache.compile(tmpl),
+                fn=function(ctx,partials){
+                    attachHelpers(ctx);
+                    return tmp(ctx,partials)
+                };
+            fn.__nowax__=tmp;
+            return store(_id||tmpl,fn);
+        } : 
+        // Not Mustache.js - Betting on Hogan
+        function(_id,tmpl){
+            var tmp=isFunc(tmpl) && new YourMustache.Template(tmpl) || YourMustache.compile(tmpl),
+            fn=function(ctx,partials){
+                var opts;
+                if(partials){
+                    opts=getRawPartials(partials);
+                }
+                attachHelpers(ctx);
+                return tmp.render(ctx,opts);
+            };
+            fn.__nowax__=tmp;
+            return store(_id||tmpl,fn);
+        }
+    );
 
-    ns.Wax={
+    return {
         get             : get,
         lookup          : lookup,
         register        : register,
@@ -146,11 +158,4 @@
         }
     }
 
-})(this,document,{
-    mustache    : typeof Mustache!=='undefined' && Mustache,
-    hogan       : typeof Hogan!=='undefined' && Hogan
-});
-
-if(this.define && this.define.amd){
-    define('Wax',this.Wax)
-}
+}));

@@ -1,0 +1,25 @@
+{
+  "name": "Wax",
+  "version": "1.0.0-beta.1",
+  "description": "A template wrapper and manager for some popular JS implementations of the Mustache spec.",
+  "main": "wax.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rmunson/Wax.git"
+  },
+  "keywords": [
+    "Wax",
+    "Mustache",
+    "Hogan",
+    "Mustachejs"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rmunson/Wax/issues"
+  },
+  "homepage": "https://github.com/rmunson/Wax"
+}
