@@ -23,7 +23,7 @@ Just add a path definition for 'WaxMustache' to your require config:
 ```
 	require.config({
 		paths : {
-			"WaxMustache" : "./bower_components/hogan/web/builds/3.0.2/hogan-3.0.2.amd.js"
+			"WaxMustache" : "./bower_components/hogan/web/builds/3.0.2/hogan-3.0.2.amd"
 		}
 	});
 

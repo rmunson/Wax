@@ -1,0 +1,96 @@
+<!doctype html>
+<html>
+<head>
+	<title>Wax - Unit tests</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+	<link rel="stylesheet" type="text/css" href="../bower_components/mocha/mocha.css">
+	<style>
+		#mocha .test code, #mocha .test pre {
+			white-space:pre-line;
+		}
+	</style>
+	<script type="text/javascript" src="../bower_components/requirejs/require.js"></script>
+	<script type="text/javascript" src="../bower_components/mocha/mocha.js"></script>
+
+</head>
+<body>
+	<div id="mocha"></div>
+	<script type="text/javascript">
+		var suites=0;
+		mocha.setup({
+			ui : 'bdd',
+			reporter : ['html'],
+			globals  : ['results','Hogan','Mustache']
+		});
+		mocha.checkLeaks();
+		
+		requireHogan=require.config({
+			baseUrl : '../bower_components/',
+			context : 'hogan',
+			paths 	: {
+				'WaxMustache'	:'hogan/web/builds/3.0.2/hogan-3.0.2.amd'
+			}
+		});
+		requireMustache=require.config({
+			baseUrl : '../bower_components/',
+			context : 'mustache',
+			paths 	: {
+				'WaxMustache'	:'mustache.js/mustache'
+			}
+		});
+		requireHogan([
+			'chai/chai', 
+			'../Wax'
+		],function( chai, Wax ){
+			var expect=chai.expect,
+				templateString='Nice and {{difficulty}}!';
+			describe("Wax - Hogan",function(){
+				it("should exist",function(){
+					expect(Wax).to.exist;
+				})
+				it("should compile a mustache template",function(){
+					expect(Wax.compile(templateString)).to.be.an.instanceOf(Function);
+				});
+				it("should render a string from a compiled mustache template",function(){
+					expect(Wax.register('test2',templateString)({
+						difficulty : 'easy'
+					})).to.equal("Nice and easy!");
+				});
+			});
+			suites++;
+			if(suites===2){
+				mocha.run();
+			}
+		});			
+		requireMustache([
+			'chai/chai', 
+			'../Wax'
+		],function( chai, Wax ){
+			var expect=chai.expect,
+				templateString='Nice and {{difficulty}}!';
+
+			describe("Wax - Mustache",function(){
+				it("should exist",function(){
+					expect(Wax).to.exist;
+				})
+				it("should compile a mustache template",function(){
+					expect(Wax.compile(templateString)).to.be.an.instanceOf(Function);
+				});
+				it("should render a string from a compiled mustache template",function(){
+					expect(Wax.register('test2',templateString)({
+						difficulty : 'easy'
+					})).to.equal("Nice and easy!");
+				});
+			});
+			suites++;
+
+			if(suites===2){
+				mocha.run();
+			}
+		});			
+
+	</script>
+</body>
+</html>

@@ -17,8 +17,8 @@
     } else{
         root.Wax = factory(typeof Mustache!=='undefined' && Mustache || typeof Hogan!=='undefined' && Hogan);
     }
-}(this,function(yourMustache){
-    if(T===undefined){
+}(this,function(YourMustache){
+    if(YourMustache===undefined){
         _err(ERROR+"Template engine not found");
     }
     var primary,
@@ -97,8 +97,8 @@
             ctx[key]=ctx[key]||hcache[key];
         }
     },
-    register = function(tmpl,id){
-        return compile(id,tmpl);
+    register = function(id,tmpl){
+        return compile(tmpl,id);
     },
     registerById = function(id){
         var tmpl;
@@ -116,24 +116,35 @@
     },
         // Detect the compiler
     compile=(function(_compile){
-        return function(id,tmpl){
-            return ccache[id||tmpl] || _compile(id,tmpl);
+        return function(tmpl,id){
+            return ccache[id||tmpl] || _compile(tmpl,id);
         }
-    })(T.name && T.name===MUSTACHENAME ? 
+    })(YourMustache.name && YourMustache.name===MUSTACHENAME ? 
         // Mustache.js detected
-        function(_id,tmpl){
-            var tmp=isFunc(tmpl) && tmpl || YourMustache.compile(tmpl),
-                fn=function(ctx,partials){
-                    attachHelpers(ctx);
-                    return tmp(ctx,partials)
-                };
+        (YourMustache.compile ? function(tmpl,id){
+            var tmp=isFunc(tmpl) && tmpl || YourMustache.compile(tmpl);
+
+            function fn(ctx,partials){
+                attachHelpers(ctx);
+                return tmp(ctx,partials)
+            };
             fn.__nowax__=tmp;
-            return store(_id||tmpl,fn);
-        } : 
+            return store(id||tmpl,fn);
+        } : function(tmpl,id){
+            YourMustache.parse(tmpl);
+
+            function fn(ctx,partials){
+                attachHelpers(ctx);
+                return YourMustache.render(tmpl,ctx,partials);
+            }
+            fn.__nowax__=tmpl;
+            return store(id||tmpl,fn);
+        }) : 
         // Not Mustache.js - Betting on Hogan
-        function(_id,tmpl){
-            var tmp=isFunc(tmpl) && new YourMustache.Template(tmpl) || YourMustache.compile(tmpl),
-            fn=function(ctx,partials){
+        function(tmpl,id){
+            var tmp=isFunc(tmpl) && new YourMustache.Template(tmpl) || YourMustache.compile(tmpl);
+
+            function fn(ctx,partials){
                 var opts;
                 if(partials){
                     opts=getRawPartials(partials);
@@ -142,13 +153,14 @@
                 return tmp.render(ctx,opts);
             };
             fn.__nowax__=tmp;
-            return store(_id||tmpl,fn);
+            return store(id||tmpl,fn);
         }
     );
 
     return {
         get             : get,
         lookup          : lookup,
+        compile         : compile,
         register        : register,
         registerById    : registerById,
         registerHelper  : registerHelper,
@@ -157,5 +169,4 @@
             return ccache;
         }
     }
-
 }));

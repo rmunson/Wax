@@ -23,7 +23,10 @@
   "homepage": "https://github.com/rmunson/Wax",
   "devDependencies": {
     "hogan": ">=2.0.0",
-    "mustache.js": ">=0.5.2"
+    "mustache.js": ">=0.5.2",
+    "requirejs": "~2.1.14",
+    "mocha": "~1.21.4",
+    "chai": "~1.9.1"
   },
   "authors": [
     "Russell Munson"
