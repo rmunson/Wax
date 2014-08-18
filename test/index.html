@@ -33,6 +33,13 @@
 				'WaxMustache'	:'hogan/web/builds/3.0.2/hogan-3.0.2.amd'
 			}
 		});
+		requireRJSHogan=require.config({
+			baseUrl : '../bower_components/',
+			context : 'rjs-hogan',
+			paths 	: {
+				'WaxMustache'	:'requirejs-hogan-plugin/hogan'
+			}
+		});
 		requireMustache=require.config({
 			baseUrl : '../bower_components/',
 			context : 'mustache',
@@ -64,7 +71,30 @@
 				mocha.run();
 			}
 		});			
-		requireMustache([
+		requireRJSHogan([
+			'chai/chai', 
+			'../Wax'
+		],function( chai, Wax ){
+			var expect=chai.expect,
+				templateString='Nice and {{difficulty}}!';
+			describe("Wax - Hogan - RequireJS plugin",function(){
+				it("should exist",function(){
+					expect(Wax).to.exist;
+				})
+				it("should compile a mustache template",function(){
+					expect(Wax.compile(templateString)).to.be.an.instanceOf(Function);
+				});
+				it("should render a string from a compiled mustache template",function(){
+					expect(Wax.register('test2',templateString)({
+						difficulty : 'easy'
+					})).to.equal("Nice and easy!");
+				});
+			});
+			suites++;
+			if(suites===2){
+				mocha.run();
+			}
+		});			requireMustache([
 			'chai/chai', 
 			'../Wax'
 		],function( chai, Wax ){

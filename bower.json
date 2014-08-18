@@ -26,7 +26,8 @@
     "mustache.js": ">=0.5.2",
     "requirejs": "~2.1.14",
     "mocha": "~1.21.4",
-    "chai": "~1.9.1"
+    "chai": "~1.9.1",
+    "requirejs-hogan-plugin": "~0.3.1"
   },
   "authors": [
     "Russell Munson"
