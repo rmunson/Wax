@@ -24,6 +24,7 @@
     var primary,
         EMPTY   = '',
         FN      = 'function',
+        STRING  = 'STRING',
         ERROR   = 'Wax error : ',
         ERROR_TEMPLATE  = ERROR + 'attempting to call unregistered template ',
         ERROR_HELPER    = ERROR + 'attempting to register helper with an existing id ',
@@ -41,6 +42,9 @@
         return typeof nf===FN;
     },
 
+    isString = function(gnirts){
+        return typeof gnirts === STRING;
+    },
     /**
      * Generate an error and return a no-operation function def to avoid
      * additional errors.
@@ -142,8 +146,8 @@
         }) : 
         // Not Mustache.js - Betting on Hogan
         function(tmpl,id){
-            var tmp=isFunc(tmpl) && new YourMustache.Template(tmpl) || YourMustache.compile(tmpl);
-
+            var tmp=isString(tmpl) && YourMustache.compile(tmpl) || new YourMustache.Template(tmpl);
+            // console.log(tmpl());
             function fn(ctx,partials){
                 var opts;
                 if(partials){
