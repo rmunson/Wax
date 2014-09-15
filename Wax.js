@@ -24,7 +24,7 @@
     var primary,
         EMPTY   = '',
         FN      = 'function',
-        STRING  = 'STRING',
+        STRING  = 'string',
         ERROR   = 'Wax error : ',
         ERROR_TEMPLATE  = ERROR + 'attempting to call unregistered template ',
         ERROR_HELPER    = ERROR + 'attempting to register helper with an existing id ',
@@ -108,7 +108,7 @@
         var tmpl;
         if(typeof id==="string"){
             tmpl=(doc.getElementById(id)||EMPTY).innerHTML;
-            return tmpl && compile(id,tmpl);
+            return tmpl && compile(tmpl,id);
         }
         return error(id);
     },
