@@ -1,6 +1,6 @@
 {
   "name": "Wax",
-  "version": "1.0.0-beta.3",
+  "version": "1.1.0-beta.1",
   "description": "A template wrapper and manager for some popular JS implementations of the Mustache spec.",
   "main": "Wax.js",
   "scripts": {
@@ -43,5 +43,8 @@
     "bower_components",
     "test",
     "tests"
-  ]
+  ],
+  "dependencies": {
+    "text": "~2.0.12"
+  }
 }

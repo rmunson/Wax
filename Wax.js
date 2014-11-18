@@ -133,6 +133,7 @@
                 return tmp(ctx,partials)
             };
             fn.__nowax__=tmp;
+            fn.isMustache=true;
             return store(id||tmpl,fn);
         } : function(tmpl,id){
             YourMustache.parse(tmpl);
@@ -142,6 +143,7 @@
                 return YourMustache.render(tmpl,ctx,partials);
             }
             fn.__nowax__=tmpl;
+            fn.isMustache=true;
             return store(id||tmpl,fn);
         }) : 
         // Not Mustache.js - Betting on Hogan
@@ -154,6 +156,7 @@
                     opts=getRawPartials(partials);
                 }
                 attachHelpers(ctx);
+                fn.isHogan=true;
                 return tmp.render(ctx,opts);
             };
             fn.__nowax__=tmp;
@@ -171,6 +174,7 @@
         render          : render,
         list            : function(){
             return ccache;
-        }
+        },
+        WaxMustache     : YourMustache
     }
 }));

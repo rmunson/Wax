@@ -44,7 +44,8 @@
 			baseUrl : '../bower_components/',
 			context : 'mustache',
 			paths 	: {
-				'WaxMustache'	:'mustache.js/mustache'
+				'WaxMustache'	:'mustache.js/mustache',
+				'text'			: 'text/text'
 			}
 		});
 		requireHogan([
@@ -94,7 +95,8 @@
 			if(suites===2){
 				mocha.run();
 			}
-		});			requireMustache([
+		});			
+		requireMustache([
 			'chai/chai', 
 			'../Wax'
 		],function( chai, Wax ){
@@ -120,7 +122,9 @@
 				mocha.run();
 			}
 		});			
-
+		requireMustache(["../get!../test/loader.mustache"],function(tpl){
+			console.log(tpl);
+		});
 	</script>
 </body>
 </html>
