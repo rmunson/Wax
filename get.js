@@ -5,10 +5,12 @@ define(['text','./Wax'],function(text,Wax){
         load : function(fileName, parentRequire, onLoad, config){
             text.get(parentRequire.toUrl(fileName), function(templateString){
                 var tpl;
-                // If we're in an rjs optimizer routine and you've
-                // asked for template compilation - assuming hogan
-                if(config.isBuild && config.compile){
-                    tpl=buildOutput[fileName]=Wax.WaxMustache.compile(templateString,{asString:true});
+                // If we're in an rjs optimizer routine, compile for Hogan, and
+                // return the string for mustache
+                if(config.isBuild){
+                    tpl=buildOutput[fileName]=Wax.compile.isHogan ? 
+                        Wax.WaxMustache.compile(templateString,{asString:true}) :
+                        '"'+text.jsEscape(templateString) + '"';
                 }else{
                     tpl=Wax.register(fileName,templateString);
                 }
@@ -16,8 +18,8 @@ define(['text','./Wax'],function(text,Wax){
             });
         },
         write : function(pluginName, fileName, write){
-            var out = 'define("'+pluginName+'!"'+moduleName+',["Wax/Wax"],function(Wax){' +
-                'return Wax.register("'+id+'",'+
+            var out = 'define("'+pluginName+'!"'+fileName+',["Wax/Wax"],function(Wax){' +
+                'return Wax.register("'+fileName+'",'+
                     buildOutput[fileName] +
                     ');' +
                 '});'
