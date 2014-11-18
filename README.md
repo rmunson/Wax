@@ -27,7 +27,7 @@ Just add a path definition for 'WaxMustache' to your require config:
 		}
 	});
 
-	require(['./bower_components/Wax/Wax.js'],function(Wax){
+	require(['./bower_components/Wax/Wax'],function(Wax){
 		var myTpl = Wax.compile('Nice and {{difficulty}}!');
 
 		console.info(myTpl({
@@ -36,5 +36,31 @@ Just add a path definition for 'WaxMustache' to your require config:
 
 	});
 ```
+### Using as a Requirejs Loader plugin
+Wax comes packed with a built-in Requirejs loader plugin to streamline your template inclusion.  Wax will compile and return the template object for rendering (just is if you called Wax.compile on a local string).
 
+Just add a path definition for 'WaxMustache' to your require config, as shown above.  Since the loader is build on-top of requirejs-text, you will also need to add a path for "text" if it is not living on you're baseUrl.  See https://github.com/requirejs/text#usage for more info.
+
+Your config should look something like : 
+
+```
+	require.config({
+		paths : {
+			"WaxMustache" : "./bower_components/hogan/web/builds/3.0.2/hogan-3.0.2.amd",
+			"text" 		  : "./bower_comonents/text/text"
+		}
+	});
+```
+You can then simply call Wax/get using the loader syntax.
+
+```
+	require(['./bower_components/Wax/Wax/get!mytemplate-path'],function(template){
+		var myTpl = template('Nice and {{difficulty}}!');
+
+		console.info(myTpl({
+			difficulty : 'easy'
+		});
+
+	});
+```
 
