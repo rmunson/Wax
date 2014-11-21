@@ -6,7 +6,7 @@ define(['text','./Wax'],function(text,Wax){
         load : function(module, parentRequire, onLoad, config){
             var file = text.parseName(module),
                 fileName=file.moduleName + '.'+(file.ext||MUSTACHE);
-            console.info('load',fileName,module);
+
             text.get(parentRequire.toUrl(fileName), function(templateString){
                 var tpl;
                 // If we're in an rjs optimizer routine, compile for Hogan, and
@@ -27,7 +27,6 @@ define(['text','./Wax'],function(text,Wax){
                         buildOutput[module] +
                     ');' +
                 '});';
-            console.info('write',module);
             write(out);
         }
     }
