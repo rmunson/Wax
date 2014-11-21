@@ -1,10 +1,10 @@
 {
   "name": "Wax",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A template wrapper and manager for some popular JS implementations of the Mustache spec.",
   "main": "wax.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/mocha"
   },
   "repository": {
     "type": "git",
@@ -21,5 +21,10 @@
   "bugs": {
     "url": "https://github.com/rmunson/Wax/issues"
   },
-  "homepage": "https://github.com/rmunson/Wax"
+  "homepage": "https://github.com/rmunson/Wax",
+  "devDependencies": {
+    "chai": "^1.10.0",
+    "mocha": "^2.0.1",
+    "requirejs": "^2.1.15"
+  }
 }
