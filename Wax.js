@@ -147,7 +147,7 @@
             };
             _compile.isMustache = true;
         } else {
-                // Not Mustache.js - Betting on Hogan
+                // Not Mustache.js - Betting on Hogan            
             process = function(tmpl,id){
                 var tmp=isString(tmpl) && YourMustache.compile(tmpl) || new YourMustache.Template(tmpl);
                 // console.log(tmpl());

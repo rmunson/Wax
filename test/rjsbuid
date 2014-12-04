@@ -1,0 +1,75 @@
+
+var rjs     = require('requirejs'),
+    expect  = require('chai').expect,
+    path    = require('path');
+
+var baseUrl = path.relative(process.cwd(),path.dirname(require.main.filename));
+
+// mocha.ui('bdd');
+
+describe('Using requirejs to optimize Wax/get loaded template', function () {
+    it('WaxMustache is Hogan', function (done) {
+        rjs.optimize({
+            name     : "buildy-testy",
+            optimize : 'none',
+            baseUrl : baseUrl,
+            normalizeDirDefines : "skip",
+            out     : function(data,err){
+                // if(err){
+                //     console.error(err);
+                // }else{
+                //     console.log("Hogan build test complete")
+                // }
+
+            },
+            onBuildWrite : function(moduleName, path, contents){
+                if(moduleName === "../get!./loader.mustache"){
+                    console.log(contents);
+                    expect(contents).to.equal(contents);
+                    done();
+                }
+            },
+            paths       : {
+                "text" : "../bower_components/text/text",
+                "WaxMustache" : "../bower_components/hogan/web/builds/3.0.2/hogan-3.0.2.amd"
+            },
+            rawText     : {
+                "buildy-testy" : "define(function(require,module,exports){  return require('../get!./loader.mustache'); })"
+            }
+        });
+    });
+
+    it('WaxMustache is Mustache', function (done) {
+
+        rjs.optimize({
+            name     : "buildy-testy",
+            optimize : 'none',
+            baseUrl : baseUrl,
+            normalizeDirDefines : "skip",
+            out     : function(data,err){
+                // if(err){
+                //     console.error(err);
+                // }else{
+                //     console.log("Hogan build test complete")
+                // }
+
+            },
+            onBuildWrite : function(moduleName, path, contents){
+                if(moduleName === "../get!./loader.mustache"){
+                    console.log(contents);
+                    expect(contents).to.equal(contents);
+                    done();
+                }
+            },
+            paths       : {
+                "text" : "../bower_components/text/text",
+                "WaxMustache" : "../bower_components/mustache.js/mustache"
+            },
+            rawText     : {
+                "buildy-testy" : "define(function(require,module,exports){  return require('../get!./loader.mustache'); })"
+            }
+        })
+
+
+    });
+});
