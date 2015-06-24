@@ -4,8 +4,8 @@ var rjs     = require('requirejs'),
     path    = require('path');
 
 
-var hoganTest='\ndefine("get!"test/loader,["Wax/Wax"],function(Wax){return Wax.register("test/loader",{code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("RJS loaded ");t.b(t.v(t.f("yesOrNo",c,p,0)));t.b("\\n");return t.fl(); },partials: {}, subs: {  }});});',
-    mustacheTest='\ndefine("get!"test/loader,["Wax/Wax"],function(Wax){return Wax.register("test/loader","RJS loaded {{yesOrNo}}\\n");});';
+var hoganTest='\ndefine("get!test/loader",["Wax/Wax"],function(Wax){return Wax.register("test/loader",{code: function (c,p,i) { var t=this;t.b(i=i||"");t.b("RJS loaded ");t.b(t.v(t.f("yesOrNo",c,p,0)));t.b("\\n");return t.fl(); },partials: {}, subs: {  }});});',
+    mustacheTest='\ndefine("get!test/loader",["Wax/Wax"],function(Wax){return Wax.register("test/loader","RJS loaded {{yesOrNo}}\\n");});';
 
 describe('Using requirejs to optimize Wax/get loaded template', function () {
     this.timeout(5000);
