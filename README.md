@@ -53,7 +53,7 @@ Your config should look something like :
 You can then simply call Wax/get using the loader syntax.
 
 ```
-	require(['./bower_components/Wax/Wax/get!mytemplate-path'],function(template){
+	require(['./bower_components/Wax/get!mytemplate-path'],function(template){
 		var myTpl = template('Nice and {{difficulty}}!');
 
 		console.info(myTpl({
