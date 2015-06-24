@@ -22,7 +22,7 @@ define(['text','./Wax'],function(text,Wax){
             });
         },
         write : function(pluginName, module, write){
-            var out = 'define("'+pluginName+'!"'+module+',["Wax/Wax"],function(Wax){' +
+            var out = 'define("'+pluginName+'!'+module+'",["Wax/Wax"],function(Wax){' +
                 'return Wax.register("'+module+'",'+
                         buildOutput[module] +
                     ');' +
