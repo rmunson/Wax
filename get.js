@@ -12,9 +12,9 @@ define(['text','./Wax'],function(text,Wax){
                 // If we're in an rjs optimizer routine, compile for Hogan, and
                 // return the string for mustache
                 if(config.isBuild){
-                    tpl=buildOutput[module]=Wax.compile.isHogan ? 
+                    tpl=buildOutput[module]=Wax.compile.isHogan && false? 
                         Wax.WaxMustache.compile(templateString,{asString:true}) :
-                        '"'+text.jsEscape(templateString) + '"';
+                        "'"+text.jsEscape(templateString) + "'";
                 } else {
                     tpl=Wax.register(module,templateString);
                 }
